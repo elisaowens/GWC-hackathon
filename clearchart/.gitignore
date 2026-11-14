@@ -1,0 +1,9 @@
+# Python junk that should never go on GitHub
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Editor / OS files
+.vscode/
+.DS_Store

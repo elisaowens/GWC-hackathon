@@ -1,0 +1,42 @@
+{#
+  base.html  -  the shared "frame" that EVERY page sits inside.
+  Each page says {% extends "base.html" %} and fills in the blocks below
+  ({% block title %}, {% block content %} and {% block scripts %}).
+  Put things here once (top bar, footer) and they show up on every page.
+#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Home{% endblock %} · ClearChart</title>
+  {# a tiny built-in tab icon. Without one, browsers ask the server for /favicon.ico
+     and your terminal fills with a harmless-but-scary "404" line. #}
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🩺%3C/text%3E%3C/svg%3E">
+  {# url_for('static', ...) builds the right web address for files in the static/ folder #}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('home') }}">ClearChart</a>
+    <nav aria-label="Main">
+      {# request.endpoint is the name of the page function we are on right now.
+         We use it to give the current link the "active" look. #}
+      <a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a>
+      <a href="{{ url_for('overview') }}" class="{% if request.endpoint == 'overview' %}active{% endif %}">Overview</a>
+      <a href="{{ url_for('results') }}" class="{% if request.endpoint == 'results' %}active{% endif %}">Test Results</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    Hackathon demo with made-up sample data. Not real medical advice.
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

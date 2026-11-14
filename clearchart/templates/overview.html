@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Overview{% endblock %}
+
+{% block content %}
+
+  <h1>Your Health Overview</h1>
+  <p class="subtitle">Click a condition to see where it is on your body and what to watch for.</p>
+
+  <div class="overview-layout">
+
+    {# ================= LEFT: the sidebar of condition tabs ================= #}
+    <aside class="sidebar" aria-label="Your conditions">
+      {% for c in conditions %}
+        {# look up the colour + explanation for this condition's status #}
+        {% set status = status_info[c.status] %}
+
+        <div class="condition">
+
+          {# ----- the main tab (a button) ----- #}
+          <button class="condition-tab" type="button"
+                  id="tab-{{ c.id }}"
+                  data-condition-id="{{ c.id }}"
+                  data-region="{{ c.region }}"
+                  data-region-label="{{ c.region_label }}"
+                  aria-expanded="false"
+                  aria-controls="panel-{{ c.id }}">
+            <span class="tab-text">
+              <span class="tab-name">{{ c.name }}</span>
+              <span class="tab-category">{{ c.category }}</span>
+            </span>
+            <span class="badge badge-{{ status.css }}">{{ c.status }}</span>
+            <span class="chevron" aria-hidden="true">▾</span>
+          </button>
+
+          {# ----- the mini tab underneath (hidden until the button is clicked) ----- #}
+          <div class="condition-panel" id="panel-{{ c.id }}" role="region" aria-labelledby="tab-{{ c.id }}" hidden>
+
+            <h3>About this condition</h3>
+            <p>{{ c.description }}</p>
+
+            <h3>Your status</h3>
+            <p><span class="badge badge-{{ status.css }}">{{ c.status }}</span></p>
+            <p class="status-help">{{ status.help }}</p>
+
+            <h3>What it looks like</h3>
+            <img src="{{ url_for('static', filename=c.looks_like.image) }}" alt="{{ c.looks_like.alt }}" loading="lazy">
+            <p>{{ c.looks_like.text }}</p>
+
+            <h3>Signs it is getting worse</h3>
+            <img src="{{ url_for('static', filename=c.getting_worse.image) }}" alt="{{ c.getting_worse.alt }}" loading="lazy">
+            <ul class="signs signs-worse">
+              {% for sign in c.getting_worse.signs %}
+                <li>{{ sign }}</li>
+              {% endfor %}
+            </ul>
+
+            <h3>Signs it is getting better</h3>
+            <img src="{{ url_for('static', filename=c.getting_better.image) }}" alt="{{ c.getting_better.alt }}" loading="lazy">
+            <ul class="signs signs-better">
+              {% for sign in c.getting_better.signs %}
+                <li>{{ sign }}</li>
+              {% endfor %}
+            </ul>
+
+          </div>
+        </div>
+      {% endfor %}
+    </aside>
+
+    {# ================= RIGHT: the body model ================= #}
+    <section class="model-card" aria-label="Body model">
+      {% include "_body.html" %}
+      <p id="model-caption" class="model-caption" aria-live="polite">Select a condition to see where it is on the body.</p>
+    </section>
+
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/overview.js') }}"></script>
+{% endblock %}

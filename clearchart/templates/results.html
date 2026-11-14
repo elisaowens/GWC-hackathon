@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Test Results{% endblock %}
+
+{% block content %}
+
+  <h1>Your Test Results</h1>
+  <p class="subtitle">
+    Medical words are <span class="jargon-demo">highlighted and underlined</span>.
+    Hover over one (or press Tab to reach it) for a simple explanation.
+  </p>
+
+  {# quick links that jump to each test further down the page #}
+  <nav class="jump-links" aria-label="Jump to a test">
+    {% for t in tests %}
+      <a href="#{{ t.id }}">{{ t.name }}</a>
+    {% endfor %}
+  </nav>
+
+  {# ---------- One card per test ----------
+     The "| jargon" part runs our Python filter from app.py. It wraps every
+     medical word in a highlighted <span>. #}
+  {% for t in tests %}
+    <section class="card test" id="{{ t.id }}">
+      <header class="test-header">
+        <h2>{{ t.name | jargon }}</h2>
+        <p class="test-date">Collected {{ t.date }}</p>
+      </header>
+
+      <p class="test-summary">{{ t.summary | jargon }}</p>
+
+      <div class="table-wrap">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th scope="col">Test</th>
+              <th scope="col">Your result</th>
+              <th scope="col">Normal range</th>
+              <th scope="col">What it means</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in t.rows %}
+              <tr>
+                <th scope="row">{{ r.name | jargon }}</th>
+                <td>
+                  <strong>{{ r.value }}</strong> {{ r.unit }}
+                  <span class="flag flag-{{ r.flag | lower }}">
+                    {% if r.flag == "High" %}▲{% elif r.flag == "Low" %}▼{% else %}✓{% endif %} {{ r.flag }}
+                  </span>
+                </td>
+                <td>{{ r.normal_range }} {{ r.unit }}</td>
+                <td>{{ r.meaning | jargon }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  {% endfor %}
+
+  {# ---------- Things the JavaScript needs ---------- #}
+
+  {# the pop-up box; JavaScript fills it in and moves it next to the word #}
+  <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+
+  {# a hidden copy of the body drawing; JavaScript copies it for the mini pictures #}
+  <div id="body-template" hidden>
+    {% include "_body.html" %}
+  </div>
+
+  {# the glossary, handed to JavaScript as data (tojson converts it safely) #}
+  <script id="glossary-data" type="application/json">{{ glossary | tojson }}</script>
+
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/results.js') }}"></script>
+{% endblock %}

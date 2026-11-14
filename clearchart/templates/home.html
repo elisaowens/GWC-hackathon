@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+  {# ---------- Welcome message ---------- #}
+  <section class="welcome">
+    <p class="date">{{ today }}</p>
+    <h1>Welcome back, {{ patient.first_name }}!</h1>
+    <p class="subtitle">Here is what needs your attention today.</p>
+  </section>
+
+  {# ---------- Action items (notifications) ----------
+     {% for ... %} repeats the HTML inside once for every item in the list. #}
+  <section class="card" aria-labelledby="action-heading">
+    <h2 id="action-heading">Action items <span class="count">{{ action_items|length }}</span></h2>
+    <ul class="action-list">
+      {% for item in action_items %}
+        <li class="action-item action-{{ item.level }}">
+          <div class="action-body">
+            <span class="tag tag-{{ item.level }}">{{ item.tag }}</span>
+            <strong class="action-title">{{ item.title }}</strong>
+            <p>{{ item.message }}</p>
+          </div>
+          {# builds e.g. /overview#fractured-wrist (the #... part is only added if there is an anchor) #}
+          <a class="action-link" href="{{ url_for(item.endpoint) }}{% if item.anchor %}#{{ item.anchor }}{% endif %}">{{ item.link_text }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  {# ---------- The four tabs ----------
+     Tabs with an endpoint are real links. Tabs without one are greyed out. #}
+  <section aria-labelledby="tabs-heading">
+    <h2 id="tabs-heading">Where would you like to go?</h2>
+    <div class="tile-grid">
+      {% for tab in home_tabs %}
+        {% if tab.endpoint %}
+          <a class="tile" href="{{ url_for(tab.endpoint) }}">
+            <span class="tile-icon" aria-hidden="true">{{ tab.icon }}</span>
+            <span class="tile-label">{{ tab.label }}</span>
+            <span class="tile-blurb">{{ tab.blurb }}</span>
+          </a>
+        {% else %}
+          <div class="tile tile-disabled" aria-disabled="true">
+            <span class="tile-icon" aria-hidden="true">{{ tab.icon }}</span>
+            <span class="tile-label">{{ tab.label }}</span>
+            <span class="tile-blurb">{{ tab.blurb }}</span>
+            <span class="soon">Coming soon</span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+
+{% endblock %}

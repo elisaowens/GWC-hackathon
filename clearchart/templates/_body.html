@@ -1,0 +1,78 @@
+{#
+  _body.html  -  the anatomical model.
+
+  It is an SVG: a picture made of shapes, drawn with code. It has two layers:
+
+    1. "silhouette"  the grey body outline (always visible)
+    2. "regions"     invisible red shapes, one per body area. When a region
+                     gets the CSS class "highlight", it appears and pulses.
+
+  Each region has:
+    data-region  its name. This MUST match "region" in data.py.
+    data-view    a zoomed-in box (x y width height) used by the mini picture
+                 in the hover pop-ups on the Test Results page.
+
+  The drawing is 220 wide and 470 tall. Point (0,0) is the top-left corner.
+  LEFT/RIGHT NOTE: like in a doctor's chart, the patient's RIGHT side is on
+  the viewer's LEFT. So "right-wrist" is drawn on the left of the picture.
+
+  This file starts with an underscore because it is not a page. It is a
+  piece that other templates include with {% include "_body.html" %}.
+#}
+<svg class="body-svg" viewBox="0 0 220 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram of the human body">
+
+  {# ---------- Layer 1: the grey silhouette ---------- #}
+  <g class="silhouette">
+    <ellipse cx="110" cy="36" rx="23" ry="28"/>                      {# head #}
+    <rect x="97" y="58" width="26" height="30" rx="6"/>              {# neck #}
+    <path d="M 70 88 Q 110 78 150 88 Q 160 92 158 110 L 154 176 Q 152 206 150 246 Q 110 262 70 246 Q 68 206 66 176 L 62 110 Q 60 92 70 88 Z"/>   {# torso #}
+    <path d="M 64 92 Q 50 92 46 108 L 38 176 L 34 250 Q 33 262 44 262 Q 55 262 56 250 L 62 180 L 72 120 Z"/>      {# patient's right arm #}
+    <ellipse cx="44" cy="274" rx="11" ry="14"/>                      {# right hand #}
+    <path d="M 156 92 Q 170 92 174 108 L 182 176 L 186 250 Q 187 262 176 262 Q 165 262 164 250 L 158 180 L 148 120 Z"/>   {# patient's left arm #}
+    <ellipse cx="176" cy="274" rx="11" ry="14"/>                     {# left hand #}
+    <path d="M 70 236 L 108 244 L 104 350 L 100 436 L 76 436 L 72 350 Z"/>      {# right leg #}
+    <ellipse cx="86" cy="446" rx="18" ry="9"/>                       {# right foot #}
+    <path d="M 150 236 L 112 244 L 116 350 L 120 436 L 144 436 L 148 350 Z"/>   {# left leg #}
+    <ellipse cx="134" cy="446" rx="18" ry="9"/>                      {# left foot #}
+  </g>
+
+  {# ---------- Layer 2: the highlightable regions ---------- #}
+  <g class="regions">
+
+    <g class="region" data-region="head" data-view="60 0 100 80">
+      <ellipse cx="110" cy="36" rx="23" ry="28"/>
+    </g>
+
+    <g class="region" data-region="thyroid" data-view="60 36 100 80">
+      <ellipse cx="103" cy="76" rx="6" ry="9"/>
+      <ellipse cx="117" cy="76" rx="6" ry="9"/>
+      <rect x="103" y="73" width="14" height="5"/>
+    </g>
+
+    <g class="region" data-region="heart" data-view="59 76 120 96">
+      <ellipse cx="119" cy="124" rx="11" ry="13" transform="rotate(-15 119 124)"/>
+    </g>
+
+    <g class="region" data-region="liver" data-view="44 124 120 96">
+      <path d="M 70 164 Q 100 156 118 168 Q 112 186 88 188 Q 72 184 70 164 Z"/>
+    </g>
+
+    <g class="region" data-region="pancreas" data-view="60 150 120 96">
+      <path d="M 100 196 Q 118 188 140 194 Q 146 198 140 203 Q 118 206 100 204 Q 94 200 100 196 Z"/>
+    </g>
+
+    <g class="region" data-region="kidneys" data-view="50 172 120 96">
+      <ellipse cx="86" cy="220" rx="9" ry="14" transform="rotate(10 86 220)"/>
+      <ellipse cx="134" cy="220" rx="9" ry="14" transform="rotate(-10 134 220)"/>
+    </g>
+
+    <g class="region" data-region="right-wrist" data-view="0 206 100 80">
+      <ellipse cx="45" cy="246" rx="12" ry="13"/>
+    </g>
+
+    <g class="region" data-region="left-elbow" data-view="120 136 100 80">
+      <ellipse cx="170" cy="176" rx="12" ry="13"/>
+    </g>
+
+  </g>
+</svg>
