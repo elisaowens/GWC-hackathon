@@ -24,6 +24,13 @@ HOW THIS FILE IS BUILT
 PATIENT = {
     "first_name": "Jordan",
     "full_name": "Jordan Rivera",
+    # shown in the "Patient details" box above the body model (Overview page)
+    "sex": "Female",
+    "height": "5 ft 6 in",
+    "weight": "148 lb",
+    "age": "34",
+    "date_of_birth": "March 12, 1992",
+    "last_visit": "November 3, 2026",
 }
 
 # ----------------------------------------------------------------------

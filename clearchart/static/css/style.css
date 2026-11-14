@@ -5,27 +5,30 @@
    ========================================================================== */
 
 
-/* ---------- 1. Colours and basics ----------
+/* ---------- 1. The colour palette ----------
    :root holds "variables" so we can change a colour in ONE place.
    Use one anywhere with var(--name). */
 :root {
-  --bg: #f4f7fb;
-  --card: #ffffff;
-  --text: #1b2a3a;
-  --muted: #5b6b7c;
-  --border: #dbe3ec;
-  --primary: #1f6feb;
-  --primary-dark: #1553b3;
+  /* YOUR 5 PALETTE COLOURS (from color_range.pdf) */
+  --sky:    #BBDEF0;   /* light blue */
+  --teal:   #00A6A6;
+  --yellow: #EFCA08;
+  --amber:  #F49F0A;
+  --orange: #F08700;
+
+  /* Helper colours made from the palette */
+  --sky-soft:  #DCEEF8;   /* a paler sky blue, for soft backgrounds */
+  --page-bg:   #EEF7FC;   /* the palest sky blue: the page background */
+  --teal-dark: #006A6B;   /* a darker teal, so teal TEXT is easy to read */
+  --ink:       #0B2A3A;   /* dark navy for text. It is readable on every palette colour */
+  --muted:     #44606E;   /* softer text for small notes */
+  --white:     #FFFFFF;
+
+  /* highlighted medical words: pale yellows made from --yellow */
+  --word-bg:       #F9EA9C;
+  --word-bg-hover: #F4DA52;
+
   --radius: 14px;
-
-  /* status colours: a dark text colour + a light background for each */
-  --resolved: #136b3c;   --resolved-bg: #dff5e8;
-  --monitored: #7a5200;  --monitored-bg: #fff1c7;
-  --critical: #b42318;   --critical-bg: #fde4e1;
-
-  /* body model */
-  --body-fill: #cbd5e1;
-  --highlight: #ef4444;
 }
 
 /* make width/height include padding and borders (much easier to reason about) */
@@ -38,18 +41,18 @@
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--page-bg);
+  color: var(--ink);
   line-height: 1.5;
 }
 
 h1 { margin: 0 0 6px; font-size: 1.9rem; line-height: 1.2; }
 h2 { margin: 0 0 12px; font-size: 1.3rem; line-height: 1.25; }
-a  { color: var(--primary-dark); }
+a  { color: var(--teal-dark); }
 img { max-width: 100%; }
 
 
-/* ---------- 2. Top bar, page area, footer ---------- */
+/* ---------- 2. Top bar and page area ---------- */
 .topbar {
   display: flex;
   align-items: center;
@@ -57,24 +60,25 @@ img { max-width: 100%; }
   flex-wrap: wrap;
   gap: 12px;
   padding: 12px 24px;
-  background: var(--primary-dark);
+  background: var(--teal);
+  border-bottom: 4px solid var(--yellow);      /* a yellow stripe under the bar */
 }
 .brand {
-  color: #fff;
-  font-size: 1.3rem;
+  color: var(--ink);
+  font-size: 1.35rem;
   font-weight: 800;
   text-decoration: none;
 }
 .topbar nav { display: flex; gap: 6px; flex-wrap: wrap; }
 .topbar nav a {
-  color: #e6efff;
+  color: var(--ink);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   padding: 8px 14px;
   border-radius: 999px;
 }
-.topbar nav a:hover { background: rgba(255, 255, 255, 0.15); }
-.topbar nav a.active { background: #fff; color: var(--primary-dark); }
+.topbar nav a:hover { background: rgba(255, 255, 255, 0.35); }
+.topbar nav a.active { background: var(--white); }
 
 .page {
   max-width: 1100px;
@@ -83,25 +87,20 @@ img { max-width: 100%; }
 }
 .subtitle { margin: 0 0 22px; color: var(--muted); }
 
-.footer {
-  padding: 20px 16px 32px;
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-
 /* a white rounded box, used on the home and results pages */
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: var(--white);
+  border: 1px solid var(--sky);
   border-radius: var(--radius);
   padding: 20px;
   margin-bottom: 22px;
-  box-shadow: 0 1px 3px rgba(16, 42, 67, 0.06);
+  box-shadow: 0 1px 3px rgba(11, 42, 58, 0.08);
 }
 
 
-/* ---------- 3. Status badges (used on Overview) ---------- */
+/* ---------- 3. Status badges (used on Overview) ----------
+   Each status gets a palette colour AND a little symbol, so the meaning
+   never depends on colour alone. */
 .badge {
   display: inline-block;
   padding: 3px 10px;
@@ -109,10 +108,16 @@ img { max-width: 100%; }
   font-size: 0.78rem;
   font-weight: 700;
   white-space: nowrap;
+  color: var(--ink);
 }
-.badge-resolved  { background: var(--resolved-bg);  color: var(--resolved); }
-.badge-monitored { background: var(--monitored-bg); color: var(--monitored); }
-.badge-critical  { background: var(--critical-bg);  color: var(--critical); }
+.badge-resolved  { background: var(--teal); }
+.badge-monitored { background: var(--yellow); }
+.badge-critical  { background: var(--orange); }
+
+.badge::before { margin-right: 5px; }
+.badge-resolved::before  { content: "✓"; }
+.badge-monitored::before { content: "●"; }
+.badge-critical::before  { content: "▲"; }
 
 
 /* ==========================================================================
@@ -121,8 +126,8 @@ img { max-width: 100%; }
 .welcome { margin-bottom: 22px; }
 .welcome .date {
   margin: 0 0 4px;
-  color: var(--muted);
-  font-weight: 600;
+  color: var(--teal-dark);
+  font-weight: 700;
 }
 
 .count {
@@ -131,9 +136,10 @@ img { max-width: 100%; }
   padding: 0 8px;
   margin-left: 6px;
   border-radius: 999px;
-  background: var(--primary);
-  color: #fff;
+  background: var(--orange);
+  color: var(--ink);
   font-size: 0.85rem;
+  font-weight: 700;
   text-align: center;
   vertical-align: middle;
 }
@@ -151,14 +157,14 @@ img { max-width: 100%; }
   justify-content: space-between;
   gap: 16px;
   padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-left: 5px solid var(--primary);     /* the coloured stripe on the left */
+  border: 1px solid var(--sky);
+  border-left: 5px solid var(--teal);        /* the coloured stripe on the left */
   border-radius: 10px;
-  background: #fff;
+  background: var(--white);
 }
-.action-urgent { border-left-color: var(--critical); }
-.action-new    { border-left-color: var(--primary); }
-.action-info   { border-left-color: var(--muted); }
+.action-urgent { border-left-color: var(--orange); }
+.action-new    { border-left-color: var(--teal); }
+.action-info   { border-left-color: var(--yellow); }
 
 .action-body p { margin: 4px 0 0; color: var(--muted); }
 .action-title { margin-left: 6px; }
@@ -167,28 +173,30 @@ img { max-width: 100%; }
   display: inline-block;
   padding: 1px 8px;
   border-radius: 999px;
+  color: var(--ink);
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
-.tag-urgent { background: var(--critical-bg); color: var(--critical); }
-.tag-new    { background: #e0edff;            color: var(--primary-dark); }
-.tag-info   { background: #e8edf2;            color: var(--muted); }
+.tag-urgent { background: var(--orange); }
+.tag-new    { background: var(--teal); }
+.tag-info   { background: var(--yellow); }
 
 .action-link {
   flex: none;
   padding: 8px 14px;
   border-radius: 8px;
-  background: var(--primary);
-  color: #fff;
-  font-weight: 600;
+  background: var(--orange);
+  color: var(--ink);
+  font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
 }
-.action-link:hover { background: var(--primary-dark); }
+.action-link:hover { background: var(--amber); }
 
-/* the four big tiles: as many columns as fit, each at least 210px wide */
+/* the four big tiles: as many columns as fit, each at least 210px wide.
+   A tile can be a link (<a>) OR a button, so we reset the button look here. */
 .tile-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -197,37 +205,40 @@ img { max-width: 100%; }
 .tile {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 4px;
-  padding: 22px 18px;
-  background: var(--card);
-  border: 1px solid var(--border);
+  width: 100%;
+  padding: 20px 18px 22px;
+  background: var(--white);
+  border: 1px solid var(--sky);
+  border-top: 6px solid var(--teal);         /* each tile gets its own palette colour */
   border-radius: var(--radius);
   color: inherit;
+  font: inherit;
+  text-align: left;
   text-decoration: none;
+  cursor: pointer;
   transition: transform 0.12s, box-shadow 0.12s;
 }
+.tile:nth-child(2) { border-top-color: var(--yellow); }
+.tile:nth-child(3) { border-top-color: var(--amber); }
+.tile:nth-child(4) { border-top-color: var(--orange); }
 .tile:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(16, 42, 67, 0.12);
-  border-color: var(--primary);
+  box-shadow: 0 8px 20px rgba(11, 42, 58, 0.14);
 }
-.tile-icon  { font-size: 2rem; }
+.tile-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 8px;
+  border-radius: 50%;
+  background: var(--sky-soft);
+  font-size: 1.6rem;
+}
 .tile-label { font-size: 1.15rem; font-weight: 700; }
 .tile-blurb { color: var(--muted); font-size: 0.92rem; }
-
-/* tabs that do not work yet */
-.tile-disabled { opacity: 0.55; cursor: not-allowed; }
-.tile-disabled:hover { transform: none; box-shadow: none; border-color: var(--border); }
-.soon {
-  align-self: flex-start;
-  margin-top: 6px;
-  padding: 2px 10px;
-  border-radius: 999px;
-  background: #e8edf2;
-  color: var(--muted);
-  font-size: 0.75rem;
-  font-weight: 700;
-}
 
 
 /* ==========================================================================
@@ -251,18 +262,18 @@ img { max-width: 100%; }
   align-items: center;
   gap: 10px;
   padding: 12px 14px;
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: var(--white);
+  border: 1px solid var(--sky);
   border-radius: 12px;
   font: inherit;
   color: inherit;
   text-align: left;
   cursor: pointer;
 }
-.condition-tab:hover { border-color: var(--primary); }
+.condition-tab:hover { border-color: var(--teal); }
 .condition-tab[aria-expanded="true"] {
-  background: #eaf2ff;
-  border-color: var(--primary);
+  background: var(--sky-soft);
+  border-color: var(--teal);
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -275,8 +286,8 @@ img { max-width: 100%; }
 /* the mini tab underneath */
 .condition-panel {
   padding: 4px 16px 16px;
-  background: #fff;
-  border: 1px solid var(--primary);
+  background: var(--white);
+  border: 1px solid var(--teal);
   border-top: none;
   border-radius: 0 0 12px 12px;
 }
@@ -285,7 +296,7 @@ img { max-width: 100%; }
   font-size: 0.8rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--teal-dark);
 }
 .condition-panel p { margin: 6px 0; }
 .condition-panel img {
@@ -293,49 +304,76 @@ img { max-width: 100%; }
   width: 100%;
   height: auto;
   margin: 8px 0;
-  border: 1px solid var(--border);
+  border: 1px solid var(--sky);
   border-radius: 10px;
 }
 .status-help { color: var(--muted); }
 
 .signs { margin: 8px 0 0; padding-left: 20px; }
 .signs li { margin-bottom: 4px; }
-.signs-worse  li::marker { color: var(--critical); }
-.signs-better li::marker { color: var(--resolved); }
+.signs-worse  li::marker { color: var(--orange); }
+.signs-better li::marker { color: var(--teal); }
 
 /* the body model card stays on screen while you scroll the sidebar */
 .model-card {
   position: sticky;
   top: 16px;
   padding: 20px;
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: var(--white);
+  border: 1px solid var(--sky);
   border-radius: var(--radius);
 }
 .model-caption {
   margin: 12px 0 0;
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--muted);
 }
+
+/* ---------- Patient details box (above the body model) ---------- */
+.facts-title {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--teal-dark);
+}
+/* 3 columns, so the 6 facts make 2 neat rows */
+.patient-facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 16px;
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  background: var(--sky-soft);
+  border-radius: 12px;
+}
+.fact dt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.fact dd { margin: 2px 0 0; font-weight: 700; }
 
 
 /* ---------- The body drawing (shared by Overview and the hover pop-ups) ---------- */
 .body-svg {
   display: block;
   width: 100%;
-  max-width: 260px;
-  max-height: 70vh;
+  max-width: 230px;
+  max-height: 55vh;              /* leaves room for the details box above it */
   height: auto;
   margin: 0 auto;
   /* a thin soft outline around the whole silhouette */
-  filter: drop-shadow(0 0 1.5px rgba(71, 85, 105, 0.9));
+  filter: drop-shadow(0 0 1.5px rgba(0, 106, 107, 0.85));
 }
-.silhouette { fill: var(--body-fill); }
+.silhouette { fill: var(--sky); }
 
 /* regions are invisible until they get the class "highlight" */
 .region {
-  fill: var(--highlight);
+  fill: var(--orange);
   opacity: 0;
 }
 .region.highlight {
@@ -363,13 +401,13 @@ img { max-width: 100%; }
 }
 .jump-links a {
   padding: 6px 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--sky);
   border-radius: 999px;
-  background: #fff;
-  font-weight: 600;
+  background: var(--white);
+  font-weight: 700;
   text-decoration: none;
 }
-.jump-links a:hover { border-color: var(--primary); }
+.jump-links a:hover { border-color: var(--teal); background: var(--sky-soft); }
 
 /* when a jump link scrolls to a test, leave a little space above it */
 .test { scroll-margin-top: 16px; }
@@ -390,7 +428,7 @@ img { max-width: 100%; }
 .results-table th,
 .results-table td {
   padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--sky);
   text-align: left;
   vertical-align: top;
 }
@@ -398,37 +436,38 @@ img { max-width: 100%; }
   font-size: 0.8rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--teal-dark);
 }
-.results-table tbody th { font-weight: 600; }
+.results-table tbody th { font-weight: 700; }
 
 .flag {
   display: inline-block;
   margin-left: 6px;
   padding: 2px 8px;
   border-radius: 999px;
+  color: var(--ink);
   font-size: 0.76rem;
   font-weight: 700;
   white-space: nowrap;
 }
-.flag-normal { background: var(--resolved-bg);  color: var(--resolved); }
-.flag-low    { background: var(--monitored-bg); color: var(--monitored); }
-.flag-high   { background: var(--critical-bg);  color: var(--critical); }
+.flag-normal { background: var(--teal); }
+.flag-low    { background: var(--yellow); }
+.flag-high   { background: var(--orange); }
 
 
 /* ---------- Highlighted medical words (Wikipedia-style) ---------- */
 .jargon,
 .jargon-demo {
-  color: #0645ad;
-  background: #fff6c2;
+  color: var(--teal-dark);
+  background: var(--word-bg);
   border-radius: 2px;
   text-decoration: underline;
-  text-decoration-color: #0645ad;
+  text-decoration-color: var(--teal-dark);
   text-underline-offset: 3px;
 }
 .jargon { cursor: help; }
 .jargon:hover,
-.jargon:focus { background: #ffe97a; }
+.jargon:focus { background: var(--word-bg-hover); }
 
 /* ---------- The hover pop-up ---------- */
 .tooltip {
@@ -436,8 +475,9 @@ img { max-width: 100%; }
   z-index: 1000;
   max-width: 300px;
   padding: 12px 14px;
-  background: #10263d;
-  color: #fff;
+  background: var(--ink);
+  border-top: 4px solid var(--teal);
+  color: var(--white);
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   font-size: 0.92rem;
@@ -445,7 +485,7 @@ img { max-width: 100%; }
   pointer-events: none;          /* the pop-up never blocks the mouse */
 }
 .tooltip p { margin: 8px 0 0; }
-.tooltip-title { display: block; font-size: 1rem; }
+.tooltip-title { display: block; font-size: 1rem; color: var(--yellow); }
 
 /* the mini body picture inside the pop-up (overrides the big-model sizes above) */
 .tooltip .mini-body {
@@ -454,7 +494,7 @@ img { max-width: 100%; }
   max-width: none;
   max-height: none;
   margin: 8px 0 0;
-  background: #eef3f8;
+  background: var(--white);
   border-radius: 8px;
 }
 .tooltip .mini-body .region.highlight { animation: none; }
@@ -465,5 +505,6 @@ img { max-width: 100%; }
   .overview-layout { grid-template-columns: 1fr; }
   .model-card { position: static; order: -1; }   /* body model first, sidebar below */
   .body-svg { max-height: 50vh; }
+  .patient-facts { grid-template-columns: repeat(2, 1fr); }
   .action-item { flex-direction: column; align-items: flex-start; }
 }

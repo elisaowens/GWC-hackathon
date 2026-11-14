@@ -37,8 +37,10 @@ class ClearChartTests(unittest.TestCase):
         self.assertIn("Action items", html)
         for label in ("Overview", "Visits", "Medications", "Test Results"):
             self.assertIn(label, html)
-        # Visits and Medications are not built, so exactly 2 tiles say "Coming soon"
-        self.assertEqual(html.count("Coming soon"), 2)
+        # Visits and Medications are not built, but for the demo they must LOOK
+        # like working tiles: all 4 tiles share the same style, none say "Coming soon"
+        self.assertEqual(html.count('class="tile"'), 4)
+        self.assertNotIn("Coming soon", html)
 
     def test_home_action_links_point_at_real_pages(self):
         html = self.get_html("/")
@@ -52,6 +54,27 @@ class ClearChartTests(unittest.TestCase):
             self.assertIn(f'id="panel-{condition["id"]}"', html)
         for status in ("Resolved", "Critical", "Being Monitored"):
             self.assertIn(status, html)
+
+    def test_overview_shows_patient_details(self):
+        html = self.get_html("/overview")
+        labels = ("Sex", "Height", "Weight", "Age", "Date of Birth", "Date of Last Visit")
+        for label in labels:
+            self.assertIn(f"<dt>{label}</dt>", html)
+        for key in ("sex", "height", "weight", "age", "date_of_birth", "last_visit"):
+            self.assertIn(f"<dd>{data.PATIENT[key]}</dd>", html)
+        # the details box must come BEFORE the body drawing
+        self.assertLess(html.index('class="patient-facts"'), html.index('class="body-svg"'))
+
+    def test_footer_text_is_gone_from_every_page(self):
+        for url in ("/", "/overview", "/results"):
+            html = self.get_html(url)
+            self.assertNotIn("<footer", html)
+            self.assertNotIn("Not real medical advice", html)
+
+    def test_css_uses_the_palette(self):
+        css = (HERE / "static" / "css" / "style.css").read_text(encoding="utf-8").upper()
+        for color in ("#BBDEF0", "#00A6A6", "#EFCA08", "#F49F0A", "#F08700"):
+            self.assertIn(color, css)
 
     def test_results_page(self):
         html = self.get_html("/results")

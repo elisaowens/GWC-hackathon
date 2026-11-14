@@ -113,6 +113,7 @@ def home():
 def overview():
     return render_template(
         "overview.html",
+        patient=data.PATIENT,
         conditions=data.CONDITIONS,
         status_info=data.STATUS_INFO,
     )

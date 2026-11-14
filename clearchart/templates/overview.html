@@ -70,6 +70,20 @@
 
     {# ================= RIGHT: the body model ================= #}
     <section class="model-card" aria-label="Body model">
+
+      {# ----- Patient details box (sits above the body drawing) -----
+         <dl> is a "description list": each <dt> is a label and the <dd> under
+         it is the value. {{ patient.sex }} prints the value from data.py. #}
+      <h2 class="facts-title">Patient details</h2>
+      <dl class="patient-facts">
+        <div class="fact"><dt>Sex</dt><dd>{{ patient.sex }}</dd></div>
+        <div class="fact"><dt>Height</dt><dd>{{ patient.height }}</dd></div>
+        <div class="fact"><dt>Weight</dt><dd>{{ patient.weight }}</dd></div>
+        <div class="fact"><dt>Age</dt><dd>{{ patient.age }}</dd></div>
+        <div class="fact"><dt>Date of Birth</dt><dd>{{ patient.date_of_birth }}</dd></div>
+        <div class="fact"><dt>Date of Last Visit</dt><dd>{{ patient.last_visit }}</dd></div>
+      </dl>
+
       {% include "_body.html" %}
       <p id="model-caption" class="model-caption" aria-live="polite">Select a condition to see where it is on the body.</p>
     </section>
